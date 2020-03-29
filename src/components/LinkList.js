@@ -9,8 +9,19 @@ const LinkList = () => {
       feed {
         links {
           id
+          createdAt
           url
           description
+          postedBy {
+            id
+            name
+          }
+          votes {
+            id
+            user {
+              id
+            }
+          }
         }
       }
     }
@@ -27,7 +38,7 @@ const LinkList = () => {
 
           return (
             <div>
-              {linksToRender.map(link => {
+              {linksToRender.map((link, index) => {
                 return (
                   <Link key={link.id} link={link} index={index} />
                 )

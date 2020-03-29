@@ -5,6 +5,10 @@ import { timeDifferenceForDate } from '../utils';
 const Link = (props) => {
   const authToken = localStorage.getItem(AUTH_TOKEN)
 
+  const _voteForLink = () => {
+
+  }
+
   return (
     <div className="flex mt2 items-start">
       <div className="flex items-center">
@@ -17,12 +21,12 @@ const Link = (props) => {
       </div>
       <div className="ml1">
         <div>
-          {this.props.link.description} ({props.link.url})
+          {props.link.description} ({props.link.url})
         </div>
         <div className="f6 lh-copy gray">
-          {this.props.link.votes.length} votes | by{' '}
-          {this.props.link.postedBy
-            ? this.props.link.postedBy.name
+          {props.link.votes.length} votes | by{' '}
+          {props.link.postedBy
+            ? props.link.postedBy.name
             : 'Unknown'}{' '}
           {timeDifferenceForDate(props.link.createdAt)}
         </div>

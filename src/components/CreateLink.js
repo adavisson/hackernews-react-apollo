@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
+import { Mutation, gql } from 'react-apollo';
 
 const CreateLink = () => {
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
+
+  const POST_MUTATION = gql`
+    mutation PostMutation($description: String!, $url: String!) {
+      post(description: $description, url: $url){
+        id
+        url
+        description
+      }
+    }
+  `
 
   return (
     <div>
@@ -22,7 +33,9 @@ const CreateLink = () => {
           placholder="The URL for the link"
         />
       </div>
-      <button onClick={`... you'll implement this soon`}>Submit</button>
+      <Mutation mutation={POST_MUTATION} variables={{ description, url}}>
+        {postMutation => <button onClick={postMutation}>Submit</button>}
+      </Mutation>
     </div>
   );
 }

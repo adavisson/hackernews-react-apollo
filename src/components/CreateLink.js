@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mutation, gql } from 'react-apollo';
+import { Mutation } from 'react-apollo';
+import { gql } from 'apollo-boost';
 
 const CreateLink = () => {
   const [description, setDescription] = useState('');
@@ -30,7 +31,7 @@ const CreateLink = () => {
           value={url}
           onChange={e => setUrl(e.target.value)}
           type="text"
-          placholder="The URL for the link"
+          placeholder="The URL for the link"
         />
       </div>
       <Mutation mutation={POST_MUTATION} variables={{ description, url}}>

@@ -22,7 +22,7 @@ const Login = () => {
         {!login && (
           <input
             value={name}
-            onChange={e => setName(e.target.value))}
+            onChange={e => setName(e.target.value)}
             type="text"
             placeholder="Your name"
           />

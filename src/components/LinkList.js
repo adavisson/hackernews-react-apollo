@@ -4,76 +4,77 @@ import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 
 export const FEED_QUERY = gql`
-    {
-      feed {
-        links {
-          id
-          createdAt
-          url
-          description
-          postedBy {
-            id
-            name
-          }
-          votes {
-            id
-            user {
-              id
-            }
-          }
-        }
-      }
-    }
-  `
-
-  const NEW_LINKS_SUBSCRIPTION = gql`
-    subscription {
-      newLink {
+  query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
+    feed(first: $first, skip: $skip, orderBy: $orderBy) {
+      links {
         id
+        createdAt
         url
         description
-        createdAt
         postedBy {
           id
           name
-        } votes {
+        }
+        votes {
           id
           user {
             id
           }
         }
       }
+      count
     }
-  `
+  }
+`
 
-  const NEW_VOTES_SUBSCRIPTION = gql`
-    subscription {
-      newVote {
+const NEW_LINKS_SUBSCRIPTION = gql`
+  subscription {
+    newLink {
+      id
+      url
+      description
+      createdAt
+      postedBy {
         id
-        link {
-          id
-          url
-          description
-          createdAt
-          postedby {
-            id
-            name
-          }
-          votes {
-            id
-            user {
-              id
-            }
-          }
-        }
+        name
+      } votes {
+        id
         user {
           id
         }
       }
     }
-  `
+  }
+`
 
-const LinkList = () => {
+const NEW_VOTES_SUBSCRIPTION = gql`
+  subscription {
+    newVote {
+      id
+      link {
+        id
+        url
+        description
+        createdAt
+        postedby {
+          id
+          name
+        }
+        votes {
+          id
+          user {
+            id
+          }
+        }
+      }
+      user {
+        id
+      }
+    }
+  }
+`
+
+const LinkList = (props) => {
   const _updateCacheAfterVote = (store, createVote, linkId) => {
     const data = store.readQuery({ query: FEED_QUERY })
 
@@ -109,9 +110,19 @@ const LinkList = () => {
     })
   }
 
+  const _getQueryVariables = () => {
+    const isNewPage = props.location.pathname.includes('new')
+    const page = parseInt(props.match.params.page, 10)
+
+    const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
+    const first = isNewPage ? LINKS_PER_PAGE : 100
+    const orderBy = isNewPage ? 'createdAt_DESC' : null
+    return { first, skip, orderBy }
+  }
+
   return (
     <div>
-      <Query query={FEED_QUERY}>
+      <Query query={FEED_QUERY} variables={_getQueryVariables()}>
         {({ loading, error, data, subscribeToMore}) => {
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>

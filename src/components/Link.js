@@ -1,22 +1,50 @@
 import React from 'react';
 import { AUTH_TOKEN } from '../constants';
 import { timeDifferenceForDate } from '../utils';
+import { Mutation } from 'react-apollo';
+import { gql } from 'apollo-boost';
 
 const Link = (props) => {
   const authToken = localStorage.getItem(AUTH_TOKEN)
 
-  const _voteForLink = () => {
-
-  }
-
+  const VOTE_MUTATION = gql`
+    mutation VoteMutation($linkId: ID!) {
+      vote(linkId: $linkId) {
+        id
+        link {
+          id
+          votes {
+            id
+            user {
+              id
+            }
+          }
+        }
+        user {
+          id
+        }
+      }
+    }
+  `
+  
   return (
     <div className="flex mt2 items-start">
       <div className="flex items-center">
         <span className="gray">{props.index + 1}.</span>
         {authToken && (
-          <div className="ml1 gray f11" onClick={() => _voteForLink()}>
-            ▲
-          </div>
+          <Mutation
+            mutation={VOTE_MUTATION}
+            variables={{ linkId: props.link.id }}
+            update={(store, { data: { vote } }) => 
+              props.updateStoreAfterVote(store, vote, props.link.id)  
+            }  
+          >
+            {voteMutation => (
+              <div className="ml1 gray f11" onClick={voteMutation}>
+                ▲
+              </div>
+            )}
+          </Mutation>
         )}
       </div>
       <div className="ml1">

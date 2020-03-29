@@ -3,8 +3,7 @@ import Link from './Link';
 import { Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 
-const LinkList = () => {
-  const FEED_QUERY = gql`
+export const FEED_QUERY = gql`
     {
       feed {
         links {
@@ -27,6 +26,7 @@ const LinkList = () => {
     }
   `
 
+const LinkList = () => {
   const _updateCacheAfterVote = (store, createVote, linkId) => {
     const data = store.readQuery({ query: FEED_QUERY })
 
